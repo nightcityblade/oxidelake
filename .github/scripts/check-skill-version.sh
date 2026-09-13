@@ -54,8 +54,10 @@ fi
 
 for document in docs/SPEC.md docs/dependencies.md; do
   [ -f "$document" ] || { echo "::error::$document does not exist"; exit 1; }
-  grep -Fq "termlens/$(echo "$dep_minor" | tr . /)" "$document" ||
-    grep -Eq "termlens[^0-9]*${dep_minor//./\\.}" "$document" || {
+  # Matches every spelling these two documents use: the docs.rs URL
+  # (termlens/0.11), the table cell (`termlens` | 0.11), the manifest
+  # excerpt (termlens = { version = "0.11" }) and running prose.
+  grep -Eq "termlens[^0-9]*${dep_minor//./\\.}" "$document" || {
       echo "::error::$document does not name termlens ${dep_minor}"
       exit 1
     }
